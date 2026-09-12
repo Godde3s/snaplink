@@ -1,0 +1,25 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root { color-scheme: dark; }
+body { @apply bg-slate-950 text-slate-100 antialiased; }
+.container { @apply max-w-2xl mx-auto px-5 py-16; }
+.accent { @apply text-indigo-400; }
+h1 { @apply text-4xl font-black tracking-tight; }
+.tagline { @apply text-slate-400 mt-1 mb-8; }
+.form { @apply flex flex-col sm:flex-row gap-3; }
+.form input[type="url"] { @apply flex-1 rounded-xl bg-slate-900 border border-slate-700 px-4 py-3 outline-none focus:border-indigo-500; }
+.title-input { @apply sm:w-44 rounded-xl bg-slate-900 border border-slate-700 px-4 py-3 outline-none focus:border-indigo-500; }
+.form button { @apply rounded-xl bg-indigo-500 hover:bg-indigo-400 font-semibold px-6 py-3; }
+.error { @apply text-rose-400 mt-3 text-sm; }
+.list { @apply mt-10 flex flex-col gap-3; }
+.card { @apply bg-slate-900 border border-slate-800 rounded-2xl p-4; }
+.card-head { @apply flex justify-between items-center; }
+.slug { @apply font-mono font-bold text-indigo-300 text-lg; }
+.clicks { @apply text-xs bg-slate-800 rounded-full px-3 py-1; }
+.dest { @apply text-slate-400 text-sm truncate mt-1 mb-2; }
+.stats { @apply text-xs text-slate-500 hover:text-indigo-300; }
+.empty { @apply text-slate-500 text-center py-10; }
+.footer { @apply mt-12 text-center text-xs text-slate-600; }
+.footer a { @apply hover:text-indigo-300; }

@@ -1,0 +1,33 @@
+// Snaplink data model — SQLite for zero-config dev, swap the provider
+// to postgres in one line for production.
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model Link {
+  id        String   @id @default(cuid())
+  slug      String   @unique            // short code in the URL
+  url       String                      // destination (http/https only)
+  title     String?                     // optional label for the dashboard
+  createdAt DateTime @default(now())
+  visits    Visit[]
+
+  @@index([createdAt])
+}
+
+model Visit {
+  id        Int      @id @default(autoincrement())
+  linkId    String
+  link      Link     @relation(fields: [linkId], references: [id], onDelete: Cascade)
+  referrer  String?
+  country   String?
+  userAgent String?
+  createdAt DateTime @default(now())
+
+  @@index([linkId, createdAt])
+}

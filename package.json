@@ -1,0 +1,28 @@
+{
+  "name": "snaplink",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "prisma generate && next build",
+    "start": "next start",
+    "db:push": "prisma db push",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "@prisma/client": "^5.18.0",
+    "next": "^14.2.7",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1"
+  },
+  "devDependencies": {
+    "@types/node": "^22.4.0",
+    "@types/react": "^18.3.3",
+    "prisma": "^5.18.0",
+    "tailwindcss": "^3.4.10",
+    "autoprefixer": "^10.4.20",
+    "postcss": "^8.4.41",
+    "typescript": "^5.5.4",
+    "vitest": "^2.0.5"
+  }
+}
