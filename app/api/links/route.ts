@@ -1,11 +1,20 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { db } from '@/lib/db'
-import { generateSlug, isValidUrl, normalizeUrl } from '@/lib/links'
+import { MAX_URL_LENGTH, generateSlug, isValidUrl, normalizeUrl } from '@/lib/links'
+import { checkRateLimit, clientKey } from '@/lib/ratelimit'
 
 export const dynamic = 'force-dynamic'
 
 /** POST /api/links  { url, title? } → { link } */
 export async function POST(req: NextRequest) {
+  const limit = checkRateLimit(clientKey(req.headers))
+  if (!limit.allowed) {
+    return NextResponse.json(
+      { error: 'too many links created from this address — try again in a minute' },
+      { status: 429, headers: { 'Retry-After': String(limit.retryAfterSec) } },
+    )
+  }
+
   let body: { url?: string; title?: string }
   try {
     body = await req.json()
@@ -16,7 +25,11 @@ export async function POST(req: NextRequest) {
   const url = normalizeUrl(body.url ?? '')
   if (!isValidUrl(url)) {
     return NextResponse.json(
-      { error: 'url must be a valid absolute http(s) URL' },
+      {
+        error:
+          'url must be a public absolute http(s) URL (no credentials, ' +
+          `no localhost/private hosts, max ${MAX_URL_LENGTH} chars)`,
+      },
       { status: 400 },
     )
   }
@@ -41,8 +54,9 @@ export async function POST(req: NextRequest) {
 export async function GET() {
   const links = await db.link.findMany({
     orderBy: { createdAt: 'desc' },
-    take: 100,
+    take: 50,
     include: { _count: { select: { visits: true } } },
   })
-  return NextResponse.json({ links })
+  // Per-link analytics change constantly; don't let a CDN cache the feed.
+  return NextResponse.json({ links }, { headers: { 'Cache-Control': 'no-store' } })
 }
