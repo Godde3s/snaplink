@@ -6,9 +6,10 @@ export const dynamic = 'force-dynamic'
 /** GET /api/links/:slug/stats → totals + last 14 days + top referrers. */
 export async function GET(
   _req: NextRequest,
-  { params }: { params: { slug: string } },
+  { params }: { params: Promise<{ slug: string }> },   // Next 15: params is async
 ) {
-  const link = await db.link.findUnique({ where: { slug: params.slug } })
+  const { slug } = await params
+  const link = await db.link.findUnique({ where: { slug } })
   if (!link) return NextResponse.json({ error: 'not found' }, { status: 404 })
 
   const since = new Date(Date.now() - 14 * 24 * 3600 * 1000)

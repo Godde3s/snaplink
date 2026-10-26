@@ -10,11 +10,12 @@ export const dynamic = 'force-dynamic'
  */
 export async function GET(
   req: NextRequest,
-  { params }: { params: { slug: string } },
+  { params }: { params: Promise<{ slug: string }> },   // Next 15: params is async
 ) {
-  const link = await db.link.findUnique({ where: { slug: params.slug } })
+  const { slug } = await params
+  const link = await db.link.findUnique({ where: { slug } })
   if (!link) {
-    return NextResponse.redirect(new URL('/?notfound=' + params.slug, req.url), 302)
+    return NextResponse.redirect(new URL('/?notfound=' + encodeURIComponent(slug), req.url), 302)
   }
 
   // Never let analytics failure break the redirect.
